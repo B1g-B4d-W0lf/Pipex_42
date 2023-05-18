@@ -14,7 +14,7 @@
 # define PIPEX_H
 
 # include <fcntl.h>
-#include <sys/wait.h>
+# include <sys/wait.h>
 # include "./Libft/libft.h"
 
 typedef struct s_pipex
@@ -28,10 +28,11 @@ typedef struct s_pipex
 //utils.c
 char	*ft_sup_join(char *s1, char c, char *s2);
 void	freetab(char **tab);
-int	cmd_check(char **cmd);
+int		cmd_check(char **cmd);
 
 //pipex.c
 //childs.c
 void	firstchild(t_pipex pix, char **argv, int *link);
 void	secondchild(t_pipex pix, char **argv, int *link);
+
 #endif

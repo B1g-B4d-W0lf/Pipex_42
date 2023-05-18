@@ -23,8 +23,7 @@ void	firstchild(t_pipex pix, char **argv, int *link)
 	close(link[1]);
 	close(link[0]);
 	close(pix.fd[1]);
-	printf("here");
-	if (cmd_check(pix.cmd1) == 1)
+	if (cmd_check(pix.cmd1))
 	{
 		while (pix.paths[i])
 		{
@@ -34,8 +33,8 @@ void	firstchild(t_pipex pix, char **argv, int *link)
 			i++;
 		}
 	}
-	else 
-		execve(pix.cmd1[1], pix.cmd2, NULL);
+	else if (cmd_check(pix.cmd1) == 0)
+		execve(pix.cmd1[0], pix.cmd2, NULL);
 	exit(0);
 }
 
@@ -58,7 +57,7 @@ void	secondchild(t_pipex pix, char **argv, int *link)
 			i++;
 		}
 	}
-	else 
-		execve(pix.cmd2[1], pix.cmd2, NULL);
+	else
+		execve(pix.cmd2[0], pix.cmd2, NULL);
 	exit(0);
 }

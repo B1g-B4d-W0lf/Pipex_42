@@ -15,8 +15,8 @@
 char	**findpath(char **envp)
 {
 	char	**paths;
-	
-	while(ft_strncmp("PATH", *envp, 4))
+
+	while (ft_strncmp("PATH", *envp, 4))
 		envp++;
 	paths = ft_split(*envp + 5, ':');
 	return (paths);
@@ -44,16 +44,13 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 
 void	pipex(t_pipex pix, char **argv)
 {
-	pid_t 	pid[2];
+	pid_t	pid[2];
 	int		link[2];
 
 	pipe(link);
 	pid[0] = fork();
 	if (pid[0] == 0)
-	{
-		ft_printf("salut");
 		firstchild(pix, argv, link);
-	}
 	close(link[1]);
 	close(pix.fd[0]);
 	pid[1] = fork();
@@ -71,7 +68,7 @@ void	pipex(t_pipex pix, char **argv)
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex		pix;
-	
+
 	parse(argc, argv, envp, &pix);
 	pipex(pix, argv);
 	return (0);

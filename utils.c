@@ -16,7 +16,7 @@ int	cmd_check(char **cmd)
 {
 	int	i;
 	int	j;
-	
+
 	i = 0;
 	j = 0;
 	printf("here");
@@ -24,17 +24,25 @@ int	cmd_check(char **cmd)
 	{
 		while (cmd[i][j])
 		{
-			if (cmd[i][j] == '/');
-			{
-				printf("%s\n", cmd[i]);
+			if (cmd[i][j] == '/')
 				return (0);
-			}
 			j++;
 		}
 		j = 0;
 		i++;
 	}
 	return (1);
+}
+
+char	*whilenorm(char *str, char *s2, int *tab)
+{
+	while (s2[tab[3]])
+	{
+		str[tab[2] + tab[3]] = s2[tab[3]];
+		tab[3]++;
+	}
+	str[tab[2] + tab[3]] = '\0';
+	return (str);
 }
 
 char	*ft_sup_join(char *s1, char c, char *s2)
@@ -56,21 +64,16 @@ char	*ft_sup_join(char *s1, char c, char *s2)
 		str[tab[2]] = s1[tab[2]];
 		tab[2]++;
 	}
-	str[tab[2]] = '/';
+	str[tab[2]] = c;
 	tab[2]++;
-	while (s2[tab[3]])
-	{
-		str[tab[2] + tab[3]] = s2[tab[3]];
-		tab[3]++;
-	}
-	str[tab[2] + tab[3]] = '\0';
+	str = whilenorm(str, s2, tab);
 	return (str);
 }
 
 void	freetab(char **tab)
 {
 	int		i;
-	
+
 	i = 0;
 	while (tab[i])
 	{
