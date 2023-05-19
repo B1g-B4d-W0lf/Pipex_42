@@ -12,6 +12,16 @@
 
 #include "pipex.h"
 
+void	destroy(char **paths, char **cmd1, char **cmd2)
+{
+	if (cmd1)
+		freetab(cmd1);
+	if (cmd2)
+		freetab(cmd2);
+	if (paths)
+		freetab(paths);
+}
+
 int	cmd_check(char **cmd)
 {
 	int	i;
@@ -19,7 +29,6 @@ int	cmd_check(char **cmd)
 
 	i = 0;
 	j = 0;
-	printf("here");
 	while (cmd[i])
 	{
 		while (cmd[i][j])
@@ -67,6 +76,7 @@ char	*ft_sup_join(char *s1, char c, char *s2)
 	str[tab[2]] = c;
 	tab[2]++;
 	str = whilenorm(str, s2, tab);
+	free(s1);
 	return (str);
 }
 

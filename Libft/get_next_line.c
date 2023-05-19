@@ -6,13 +6,13 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 21:39:47 by wfreulon          #+#    #+#             */
-/*   Updated: 2022/12/21 00:22:44 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/04/23 02:33:11 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*fillstr(x_list *tab, int index)
+char	*fillstr(t_lstb *tab, int index)
 {
 	int		i;
 	int		j;
@@ -67,7 +67,7 @@ int	writetemp(char *temp, char *str, int boolean)
 	return (i);
 }
 
-char	*westigation(char *west, char *buffer, x_list **tab, int boolean)
+char	*westigation(char *west, char *buffer, t_lstb **tab, int boolean)
 {
 	char	*temp;
 	int		i;
@@ -94,7 +94,7 @@ char	*westigation(char *west, char *buffer, x_list **tab, int boolean)
 	return (free(temp), west);
 }
 
-char	*readit(int fd, char *west, x_list **tab)
+char	*readit(int fd, char *west, t_lstb **tab)
 {
 	char	*buffer;
 	int		output;
@@ -121,7 +121,7 @@ char	*readit(int fd, char *west, x_list **tab)
 
 char	*get_next_line(int fd)
 {
-	x_list		*tab;
+	t_lstb		*tab;
 	static char	*west = NULL;
 	char		*string;
 	int			i;

@@ -29,10 +29,11 @@ typedef struct s_pipex
 char	*ft_sup_join(char *s1, char c, char *s2);
 void	freetab(char **tab);
 int		cmd_check(char **cmd);
+void	destroy(char **paths, char **cmd1, char **cmd2);
 
 //pipex.c
 //childs.c
-void	firstchild(t_pipex pix, char **argv, int *link);
-void	secondchild(t_pipex pix, char **argv, int *link);
+void	firstchild(t_pipex *pix, int *link, char **envp);
+void	secondchild(t_pipex *pix, int *link, char **envp);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 23:04:16 by wfreulon          #+#    #+#             */
-/*   Updated: 2022/12/14 00:40:21 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/04/23 02:35:20 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,17 @@ typedef struct g_list
 {
 	char			*content;
 	struct g_list	*next;
-}					x_list;
+}					t_lstb;
 
-x_list	*ft_lstnewnew(char *content, x_list *lst, int boolean);
-char	*ft_lstaddback(x_list **lst, x_list *new, char *west, int boolean);
-int		ft_strlenfree(char *str, x_list *tab, int boolean);
-int		ft_lstiternew(x_list *lst, int (*f)(char *, x_list *tab, int boolean));
-char	*fillstr(x_list *tab, int index);
+t_lstb	*ft_lstnewnew(char *content, t_lstb *lst, int boolean);
+char	*ft_lstaddback(t_lstb **lst, t_lstb *new, char *west, int boolean);
+int		ft_strlenfree(char *str, t_lstb *tab, int boolean);
+int		ft_lstiternew(t_lstb *lst, int (*f)(char *, t_lstb *tab, int boolean));
+char	*fillstr(t_lstb *tab, int index);
 char	*get_next_line(int fd);
 int		checkbuffer(char c, char const *set);
-char	*readit(int fd, char *west, x_list **tab);
+char	*readit(int fd, char *west, t_lstb **tab);
 int		writetemp(char *temp, char *str, int boolean);
-char	*westigation(char *west, char *buffer, x_list **tab, int boolean);
+char	*westigation(char *west, char *buffer, t_lstb **tab, int boolean);
 
 #endif

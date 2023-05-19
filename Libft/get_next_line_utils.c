@@ -6,15 +6,15 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 21:40:26 by wfreulon          #+#    #+#             */
-/*   Updated: 2022/12/21 01:32:04 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/04/23 02:33:54 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-x_list	*ft_lstnewnew(char *content, x_list *lst, int boolean)
+t_lstb	*ft_lstnewnew(char *content, t_lstb *lst, int boolean)
 {
-	x_list	*res;
+	t_lstb	*res;
 	int		i;
 
 	i = -1;
@@ -27,7 +27,7 @@ x_list	*ft_lstnewnew(char *content, x_list *lst, int boolean)
 		res = lst;
 		return (res);
 	}
-	res = malloc(sizeof(x_list));
+	res = malloc(sizeof(t_lstb));
 	if (!res)
 		return (NULL);
 	res->content = malloc(((ft_strlenfree(content, 0, 1) + 1) * sizeof(char)));
@@ -40,9 +40,9 @@ x_list	*ft_lstnewnew(char *content, x_list *lst, int boolean)
 	return (res);
 }
 
-char	*ft_lstaddback(x_list **lst, x_list *new, char *west, int boolean)
+char	*ft_lstaddback(t_lstb **lst, t_lstb *new, char *west, int boolean)
 {
-	x_list	*temp;
+	t_lstb	*temp;
 
 	if (!boolean)
 	{
@@ -65,10 +65,10 @@ char	*ft_lstaddback(x_list **lst, x_list *new, char *west, int boolean)
 	return (west);
 }
 
-int	ft_strlenfree(char *str, x_list *tab, int boolean)
+int	ft_strlenfree(char *str, t_lstb *tab, int boolean)
 {
 	int		i;
-	x_list	*temp;
+	t_lstb	*temp;
 
 	i = 0;
 	if (!boolean)
@@ -87,7 +87,7 @@ int	ft_strlenfree(char *str, x_list *tab, int boolean)
 	return (i);
 }
 
-int	ft_lstiternew(x_list *lst, int (*f)(char *, x_list *tab, int boolean))
+int	ft_lstiternew(t_lstb *lst, int (*f)(char *, t_lstb *tab, int boolean))
 {
 	int		index;
 

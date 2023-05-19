@@ -17,9 +17,9 @@ childs.c
 LIBFT = ./Libft/libft.a
 HEADERFILES = -I pipex.h Libft/libft.h
 OBJFILES = $(SRC:.c=.o)
-CFLAGS = -g3
+CFLAGS = -Wall -Wextra -Werror -g3
 CC = gcc
-# -Wall -Wextra -Werror
+# 
 $(NAME): $(OBJFILES)
 #	make -C Libft
 	$(CC) $(CFLAGS) $(OBJFILES) ${LIBFT} -o $(NAME)

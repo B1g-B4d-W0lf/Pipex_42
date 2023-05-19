@@ -22,6 +22,34 @@ char	**findpath(char **envp)
 	return (paths);
 }
 
+void	cmdges(char **argv, t_pipex *pix)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (argv[2][i] == ' ' || (argv[2][i] >= 9 && argv[2][i] <= 13))
+		i++;
+	while (argv[3][j] == ' ' || (argv[3][j] >= 9 && argv[3][j] <= 13))
+		j++;
+	if (argv[2][i] != '\0')
+		pix->cmd1 = ft_split(argv[2], ' ');
+	else
+		perror("cmd1 is empty");
+	if (argv[3][j] != '\0')
+		pix->cmd2 = ft_split(argv[3], ' ');
+	else
+		perror("cmd2 is empty");
+	if (argv[2][i] == '\0' && argv[3][j] == '\0')
+	{
+		close(pix->fd[0]);
+		close(pix->fd[1]);
+		perror("no cmds");
+		exit(0);
+	}
+}
+
 void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 {
 	if (argc < 5)
@@ -31,18 +59,23 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
 	if (access(argv[1], R_OK) == -1)
+	{
 		perror("You can't read me");
+		exit(0);
+	}
 	pix->fd[1] = open(argv[4], O_TRUNC | O_CREAT | O_WRONLY, 0666);
-	if (access(argv[1], W_OK) == -1)
+	if (access(argv[4], W_OK) == -1)
+	{
 		perror("You can't write me");
+		exit(0);
+	}
 	if (pix->fd[0] < 0 || pix->fd[1] < 0)
 		perror("Missing a file are we?");
-	pix->cmd1 = ft_split(argv[2], ' ');
-	pix->cmd2 = ft_split(argv[3], ' ');
+	cmdges(argv, pix);
 	pix->paths = findpath(envp);
 }
 
-void	pipex(t_pipex pix, char **argv)
+void	pipex(t_pipex *pix, char **envp)
 {
 	pid_t	pid[2];
 	int		link[2];
@@ -50,26 +83,27 @@ void	pipex(t_pipex pix, char **argv)
 	pipe(link);
 	pid[0] = fork();
 	if (pid[0] == 0)
-		firstchild(pix, argv, link);
+		firstchild(pix, link, envp);
 	close(link[1]);
-	close(pix.fd[0]);
+	close((pix->fd)[0]);
 	pid[1] = fork();
 	if (pid[1] == 0)
-		secondchild(pix, argv, link);
+		secondchild(pix, link, envp);
 	close(link[0]);
-	close(pix.fd[1]);
+	close((pix->fd)[1]);
 	waitpid(pid[0], 0, 0);
 	waitpid(pid[1], 0, 0);
-	freetab(pix.paths);
-	freetab(pix.cmd1);
-	freetab(pix.cmd2);
+	destroy(pix->paths, pix->cmd1, pix->cmd2);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex		pix;
 
+	pix.paths = 0;
+	pix.cmd1 = 0;
+	pix.cmd2 = 0;
 	parse(argc, argv, envp, &pix);
-	pipex(pix, argv);
+	pipex(&pix, envp);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 20:16:55 by wfreulon          #+#    #+#             */
-/*   Updated: 2022/11/23 19:05:13 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/05/11 22:42:22 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
+float	ft_atof(char *str);
 int		ft_atoi(const char *str);
 void	ft_bzero(void *str, size_t n);
 int		ft_isalnum(int c);

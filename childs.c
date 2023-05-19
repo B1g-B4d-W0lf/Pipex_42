@@ -12,52 +12,55 @@
 
 #include "pipex.h"
 
-void	firstchild(t_pipex pix, char **argv, int *link)
+void	execcmd(t_pipex *pix, char **envp, char **cmd)
 {
 	int	i;
 
 	i = 0;
-	dup2(pix.fd[0], STDIN_FILENO);
-	close(pix.fd[0]);
-	dup2(link[1], STDOUT_FILENO);
-	close(link[1]);
-	close(link[0]);
-	close(pix.fd[1]);
-	if (cmd_check(pix.cmd1))
+	if (cmd_check(cmd) == 1)
 	{
-		while (pix.paths[i])
+		while ((pix->paths)[i])
 		{
-			pix.paths[i] = ft_sup_join(pix.paths[i], '/', pix.cmd1[0]);
-			execve(pix.paths[i], pix.cmd1, NULL);
-			free(pix.paths[i]);
+			(pix->paths)[i] = ft_sup_join((pix->paths)[i], '/', cmd[0]);
+			execve((pix->paths)[i], cmd, envp);
 			i++;
 		}
+		destroy(pix->paths, pix->cmd1, pix->cmd2);
 	}
-	else if (cmd_check(pix.cmd1) == 0)
-		execve(pix.cmd1[0], pix.cmd2, NULL);
+	else if (cmd_check(cmd) == 0)
+	{
+		execve(cmd[0], cmd, envp);
+		destroy(pix->paths, pix->cmd1, pix->cmd2);
+	}
 	exit(0);
 }
 
-void	secondchild(t_pipex pix, char **argv, int *link)
+void	firstchild(t_pipex *pix, int *link, char **envp)
 {
-	int	i;
+	dup2((pix->fd)[0], STDIN_FILENO);
+	close((pix->fd)[0]);
+	dup2(link[1], STDOUT_FILENO);
+	close(link[1]);
+	close(link[0]);
+	close((pix->fd)[1]);
+	if (pix->cmd1)
+	{
+		execcmd(pix, envp, pix->cmd1);
+	}
+	destroy(pix->paths, pix->cmd1, pix->cmd2);
+	exit(0);
+}
 
-	i = 0;
-	dup2(pix.fd[1], STDOUT_FILENO);
-	close(pix.fd[1]);
+void	secondchild(t_pipex *pix, int *link, char **envp)
+{
+	dup2((pix->fd)[1], STDOUT_FILENO);
+	close((pix->fd)[1]);
 	dup2(link[0], STDIN_FILENO);
 	close(link[0]);
-	if (cmd_check(pix.cmd2) == 1)
+	if (pix->cmd2)
 	{
-		while (pix.paths[i])
-		{
-			pix.paths[i] = ft_sup_join(pix.paths[i], '/', pix.cmd2[0]);
-			execve(pix.paths[i], pix.cmd2, NULL);
-			free(pix.paths[i]);
-			i++;
-		}
+		execcmd(pix, envp, pix->cmd2);
 	}
-	else
-		execve(pix.cmd2[0], pix.cmd2, NULL);
+	destroy(pix->paths, pix->cmd1, pix->cmd2);
 	exit(0);
 }
