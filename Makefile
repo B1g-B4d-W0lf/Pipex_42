@@ -13,7 +13,8 @@
 NAME = pipex
 SRC = pipex.c \
 utils.c \
-childs.c
+childs.c \
+parsing.c
 LIBFT = ./Libft/libft.a
 HEADERFILES = -I pipex.h Libft/libft.h
 OBJFILES = $(SRC:.c=.o)
