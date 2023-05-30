@@ -53,8 +53,7 @@ int	**piping(t_pipex *pix)
 		link[j] = malloc(2 *  sizeof(int));
 		j++;
 	}
-	return (link);
-	
+	return (link);	
 }
 
 void	pipex(t_pipex *pix, char **envp)
