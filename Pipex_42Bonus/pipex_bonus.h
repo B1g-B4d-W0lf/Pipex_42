@@ -22,8 +22,10 @@ typedef struct s_pipex
 	char	**paths;
 	int		fd[2];
 	char	***cmd;
-	int		hd;
 	int		cmdsize;
+	char	**envp;
+	int 	**link;
+	pid_t		*pid;
 }		t_pipex;
 
 //utils.c
@@ -39,10 +41,16 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix);
 //childs.c
 void	firstchild(t_pipex *pix, int *link, char **envp);
 void	secondchild(t_pipex *pix, int *link, char **envp);
-void	halfchilds(t_pipex *pix, int *link, int i, char **envp);
+void	halfchilds(t_pipex *pix, int *link, int *linkbis, int j);
 
 //parsing.c
 void	cmdges(char **argv, t_pipex *pix, int argc);
 char	**findpath(char **envp);
+
+//pipeges.c
+void	openpipe(int ***link, t_pipex *pix);
+void	closepipe(int **link, t_pipex *pix);
+int		**createpipe(t_pipex *pix);
+void	closeone(int *link);
 
 #endif

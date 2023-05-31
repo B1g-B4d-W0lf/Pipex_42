@@ -20,102 +20,60 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 		exit(EXIT_FAILURE);
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
-	pix->fd[1] = open(argv[4], O_TRUNC | O_CREAT | O_WRONLY, 0666);
-	if (access(argv[1], R_OK) == -1)
-	{
-		perror("file1: Permission denied");
-		exit(0);
-	}
-	if (access(argv[4], W_OK) == -1)
-	{
-		perror("file2: Permission denied");
-		exit(0);
-	}
-	if (pix->fd[0] < 0 || pix->fd[1] < 0)
-		perror("No such file or directory");
+	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
+	// ft_printf("%d\n", pix->fd[0]);
+	// if (access(argv[1], R_OK) == -1 && pix->fd[0] >= 0)
+	// 	perror("file1: Permission denied");
+	// if (access(argv[argc - 1], W_OK) == -1  && pix->fd[1] >= 0)
+	// 	perror("file2: Permission denied");
+	if (pix->fd[0] < 0)
+		perror("file 1");
+	if (pix->fd[1] < 0)
+		perror("file 2");
 	cmdges(argv, pix, argc);
 	pix->paths = findpath(envp);
 }
 
-int	**createpipe(t_pipex *pix)
+void	pipex(t_pipex *pix, char **envp)
 {
-	int	i;
-	int	j;
-	int	**link;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
-	while(pix->cmd[i])
-		i++;
-	pix->cmdsize = i;
-	link = malloc(pix->cmdsize * sizeof(int *));
-	if (!link)
-		return(NULL);
-	while (j < i)
-	{
-		link[j] = malloc(2 * sizeof(int));
-		if (!link[j])
-			return(NULL);
-		j++;
-	}
-	return (link);	
-}
-
-void	closepipe(int **link, t_pipex *pix)
-{
-	int	i;
-
-	i = 0;
-	while (i < pix->cmdsize)
-	{
-		close(link[i][0]);
-		close(link[i][1]);
-		free(link[i]);
-		i++;
-	}
-	free(link);
-}
-
-void	openpipe(int ***link, t_pipex *pix)
-{
-	int	i;
-
-	i = 0;
-	while (i < pix->cmdsize)
-	{
-		pipe((*link)[i]);
-		i++;
-	}
-}
-
-void	pipex(t_pipex *pix, char **envp)
-{
-	pid_t	*pid;
-	int		**link;
-	int		i;
-
-	i = 0;
-
-	link = createpipe(pix);
-	pid = malloc(pix->cmdsize * sizeof(int));
-	if (!pid)
+	pix->link = createpipe(pix);
+	pix->pid = malloc(pix->cmdsize * sizeof(int));
+	if (!pix->pid)
 		return;
-	openpipe(&link, pix);
-	pid[i] = fork();
-	if (pid[i] == 0)
-		firstchild(pix, link[i], envp);
-	// j  = 0
-	// while (j < argc - 5, ou nb cmd - 2 )
-	//{
-	//	all middle child (pix, link[i], link[j + 1], envp)
-	//
-	//	j++;
-	//}
-
-	// second child
-	waitpid(pid[i], 0, 0);
-	free(pid);
-	closepipe(link, pix);
+	openpipe(&pix->link, pix);
+	pix->pid[i] = fork();
+	if (pix->pid[i] == 0)
+		firstchild(pix, pix->link[j], envp);
+	if (pix->fd[0] >= 0)
+		close(pix->fd[0]);
+	i++;
+	j++;
+	while (j < pix->cmdsize - 1 )
+	{
+		pix->pid[i] = fork();
+		if (pix->pid[i] == 0)
+			halfchilds(pix, pix->link[j - 1], pix->link[j], j);
+		j++;
+		i++;
+	}
+	pix->pid[i] = fork();
+	if (pix->pid[i] == 0)
+		secondchild(pix, pix->link[j - 1], envp);
+	i = 0;
+	closepipe(pix->link, pix);
+	if (pix->fd[1] >= 0)
+		close(pix->fd[1]);
+	while (i <= j)
+	{
+		waitpid(pix->pid[i], 0, 0);
+		i++;
+	}
+	free(pix->pid);
 	destroy(pix->paths, pix);
 }
 
@@ -125,6 +83,8 @@ int	main(int argc, char **argv, char **envp)
 
 	pix.paths = 0;
 	pix.cmd = 0;
+	pix.link = 0;
+	pix.envp = envp;
 	parse(argc, argv, envp, &pix);
 	pipex(&pix, envp);
 	return (0);

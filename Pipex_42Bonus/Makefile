@@ -14,7 +14,8 @@ NAME = pipex_bonus
 SRC = pipex_bonus.c \
 utils_bonus.c \
 childs_bonus.c \
-parsing_bonus.c
+parsing_bonus.c \
+pipeges_bonus.c
 LIBFT = ./Libft/libft.a
 HEADERFILES = -I pipex_bonus.h Libft/libft.h
 OBJFILES = $(SRC:.c=.o)
