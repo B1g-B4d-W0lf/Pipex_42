@@ -25,12 +25,12 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 			execve((pix->paths)[i], cmd, envp);
 			i++;
 		}
-		destroy(pix->paths, pix->cmd1, pix->cmd2);
+		destroy(pix->paths, pix);
 	}
 	else if (cmd_check(cmd) == 0)
 	{
 		execve(cmd[0], cmd, envp);
-		destroy(pix->paths, pix->cmd);
+		destroy(pix->paths, pix);
 	}
 	exit(0);
 }
@@ -47,7 +47,7 @@ void	firstchild(t_pipex *pix, int *link, char **envp)
 	{
 		execcmd(pix, envp, pix->cmd[0]);
 	}
-	destroy(pix->paths, pix->cmd);
+	destroy(pix->paths, pix);
 	exit(0);
 }
 
@@ -61,7 +61,7 @@ void	secondchild(t_pipex *pix, int *link, char **envp)
 	{
 		execcmd(pix, envp, pix->cmd[pix->cmdsize]);
 	}
-	destroy(pix->paths, pix->cmd);
+	destroy(pix->paths, pix);
 	exit(0);
 }
 
@@ -76,6 +76,6 @@ void	halfchilds(t_pipex *pix, int *link, int i, char **envp)
 	{
 		execcmd(pix, envp, pix->cmd[i]);
 	}
-	destroy(pix->paths, pix->cmd);
+	destroy(pix->paths, pix);
 	exit(0);
 }

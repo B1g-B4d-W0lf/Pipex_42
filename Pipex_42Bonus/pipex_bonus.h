@@ -30,7 +30,7 @@ typedef struct s_pipex
 char	*ft_sup_join(char *s1, char c, char *s2);
 void	freetab(char **tab);
 int		cmd_check(char **cmd);
-void	destroy(char **paths, char ***cmd);
+void	destroy(char **paths, t_pipex *pix);
 
 //pipex.c
 void	pipex(t_pipex *pix, char **envp);
@@ -42,7 +42,7 @@ void	secondchild(t_pipex *pix, int *link, char **envp);
 void	halfchilds(t_pipex *pix, int *link, int i, char **envp);
 
 //parsing.c
-void	cmdges(char **argv, t_pipex *pix);
+void	cmdges(char **argv, t_pipex *pix, int argc);
 char	**findpath(char **envp);
 
 #endif

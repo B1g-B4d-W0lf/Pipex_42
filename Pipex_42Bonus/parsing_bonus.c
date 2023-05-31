@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 20:53:40 by wfreulon          #+#    #+#             */
-/*   Updated: 2023/05/20 20:54:16 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/05/31 03:36:37 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**findpath(char **envp)
 	return (paths);
 }
 
-void	cmdges(char **argv, t_pipex *pix)
+void	cmdges(char **argv, t_pipex *pix, int argc)
 {
 	int	i;
 	int	j;
@@ -33,7 +33,10 @@ void	cmdges(char **argv, t_pipex *pix)
 	j = 2;
 	k = 2;
 	l = 0;
-	while (j < argc)
+	pix->cmd = malloc((argc - 2) * sizeof(char **));
+	if (!pix->cmd)
+		return ;
+	while (j < argc - 1)
 	{
 		while (argv[j][i] == ' ' || (argv[j][i] >= 9 && argv[j][i] <= 13))
 			i++;
@@ -44,7 +47,7 @@ void	cmdges(char **argv, t_pipex *pix)
 		}
 		else
 		{
-			perror("cmd is empty");	
+			perror("cmd is empty");
 			k++;
 		}
 		j++;
@@ -58,5 +61,5 @@ void	cmdges(char **argv, t_pipex *pix)
 		exit(0);
 	}
 	else
-		pix->cmd[j] = '\0';
+		pix->cmd[(argc - 3)] = '\0';
 }

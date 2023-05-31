@@ -18,14 +18,29 @@ void	destroy(char **paths, t_pipex *pix)
 
 	i = 0;
 	if (pix->cmd)
+	{
 		while (pix->cmd[i])
 		{
 			freetab(pix->cmd[i]);
 			i++;
 		}
 		free(pix->cmd);
+	}
 	if (paths)
 		freetab(paths);
+}
+
+void	freetab(char **tab)
+{
+	int		i;
+
+	i = 0;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }
 
 int	cmd_check(char **cmd)
@@ -84,17 +99,4 @@ char	*ft_sup_join(char *s1, char c, char *s2)
 	str = whilenorm(str, s2, tab);
 	free(s1);
 	return (str);
-}
-
-void	freetab(char **tab)
-{
-	int		i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
 }
