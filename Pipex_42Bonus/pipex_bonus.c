@@ -21,11 +21,6 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
 	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
-	// ft_printf("%d\n", pix->fd[0]);
-	// if (access(argv[1], R_OK) == -1 && pix->fd[0] >= 0)
-	// 	perror("file1: Permission denied");
-	// if (access(argv[argc - 1], W_OK) == -1  && pix->fd[1] >= 0)
-	// 	perror("file2: Permission denied");
 	if (pix->fd[0] < 0)
 		perror("file 1");
 	if (pix->fd[1] < 0)
@@ -84,6 +79,7 @@ int	main(int argc, char **argv, char **envp)
 	pix.paths = 0;
 	pix.cmd = 0;
 	pix.link = 0;
+	pix.cmdsize = argc - 3;
 	pix.envp = envp;
 	parse(argc, argv, envp, &pix);
 	pipex(&pix, envp);

@@ -19,9 +19,10 @@ void	destroy(char **paths, t_pipex *pix)
 	i = 0;
 	if (pix->cmd)
 	{
-		while (pix->cmd[i])
+		while (i < pix->cmdsize)
 		{
-			freetab(pix->cmd[i]);
+			if (pix->cmd[i])
+				freetab(pix->cmd[i]);
 			i++;
 		}
 		free(pix->cmd);

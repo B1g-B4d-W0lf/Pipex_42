@@ -6,7 +6,7 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 21:48:04 by wfreulon          #+#    #+#             */
-/*   Updated: 2023/05/31 22:58:56 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/06/01 20:24:08 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,14 @@
 
 int	**createpipe(t_pipex *pix)
 {
-	int	i;
 	int	j;
 	int	**link;
 
-	i = 0;
 	j = 0;
-	while(pix->cmd[i])
-		i++;
-	pix->cmdsize = i;
 	link = malloc(pix->cmdsize * sizeof(int *));
 	if (!link)
 		return(NULL);
-	while (j < i)
+	while (j < pix->cmdsize)
 	{
 		link[j] = malloc(2 * sizeof(int));
 		if (!link[j])
