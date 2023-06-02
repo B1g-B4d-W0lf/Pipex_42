@@ -27,6 +27,37 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 		perror("file 2");
 	cmdges(argv, pix, argc);
 	pix->paths = findpath(envp);
+		pix->link = createpipe(pix);
+	pix->pid = malloc(pix->cmdsize * sizeof(int));
+	if (!pix->pid)
+		return ;
+	openpipe(&pix->link, pix);
+}
+
+void	midpipe(t_pipex *pix, int *i, int *j)
+{
+	while (*j < pix->cmdsize - 2)
+	{
+		pix->pid[*i] = fork();
+		if (pix->pid[*i] == 0)
+			halfchilds(pix, pix->link[*j], pix->link[*j + 1], *j);
+		(*j)++;
+		(*i)++;
+	}
+}
+
+void	waiting(t_pipex *pix, int j)
+{
+	int	i;
+
+	i = 0;
+	while (i <= j)
+	{
+		waitpid(pix->pid[i], 0, 0);
+		i++;
+	}
+	free(pix->pid);
+	destroy(pix->paths, pix);
 }
 
 void	pipex(t_pipex *pix, char **envp)
@@ -36,40 +67,20 @@ void	pipex(t_pipex *pix, char **envp)
 
 	i = 0;
 	j = 0;
-	pix->link = createpipe(pix);
-	pix->pid = malloc(pix->cmdsize * sizeof(int));
-	if (!pix->pid)
-		return;
-	openpipe(&pix->link, pix);
 	pix->pid[i] = fork();
 	if (pix->pid[i] == 0)
 		firstchild(pix, pix->link[j], envp);
 	if (pix->fd[0] >= 0)
 		close(pix->fd[0]);
-	i++;
-	j++;
-	while (j < pix->cmdsize - 1 )
-	{
-		pix->pid[i] = fork();
-		if (pix->pid[i] == 0)
-			halfchilds(pix, pix->link[j - 1], pix->link[j], j);
-		j++;
-		i++;
-	}
+	if (j < pix->cmdsize - 2)
+		midpipe(pix, &i, &j);
 	pix->pid[i] = fork();
 	if (pix->pid[i] == 0)
-		secondchild(pix, pix->link[j - 1], envp);
-	i = 0;
+		secondchild(pix, pix->link[j], envp);
 	closepipe(pix->link, pix);
 	if (pix->fd[1] >= 0)
 		close(pix->fd[1]);
-	while (i <= j)
-	{
-		waitpid(pix->pid[i], 0, 0);
-		i++;
-	}
-	free(pix->pid);
-	destroy(pix->paths, pix);
+	waiting(pix, j);
 }
 
 int	main(int argc, char **argv, char **envp)

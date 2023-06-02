@@ -17,7 +17,7 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 	int	i;
 
 	i = 0;
-	if (cmd_check(cmd) == 1)
+	if (cmd_check(cmd) == 1 && (pix->paths))
 	{
 		while ((pix->paths)[i])
 		{
@@ -25,42 +25,73 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 			execve((pix->paths)[i], cmd, envp);
 			i++;
 		}
-		destroy(pix->paths, pix->cmd1, pix->cmd2);
+		free(pix->pid);
+		destroy(pix->paths, pix);
 	}
 	else if (cmd_check(cmd) == 0)
 	{
 		execve(cmd[0], cmd, envp);
-		destroy(pix->paths, pix->cmd1, pix->cmd2);
+		destroy(pix->paths, pix);
+		free(pix->pid);
 	}
+	perror("invalid cmd");
+	exit(0);
+}
+
+void	terminate(t_pipex *pix)
+{
+	closepipe(pix->link, pix);
+	destroy(pix->paths, pix);
+	free(pix->pid);
 	exit(0);
 }
 
 void	firstchild(t_pipex *pix, int *link, char **envp)
 {
+	if (pix->fd[0] < 0)
+	{
+		if (pix->fd[1] >= 0)
+			close((pix->fd)[1]);
+		terminate(pix);
+	}
 	dup2((pix->fd)[0], STDIN_FILENO);
 	close((pix->fd)[0]);
 	dup2(link[1], STDOUT_FILENO);
-	close(link[1]);
-	close(link[0]);
-	close((pix->fd)[1]);
-	if (pix->cmd1)
+	if (pix->fd[1] >= 0)
+		close((pix->fd)[1]);
+	closepipe(pix->link, pix);
+	if (!pix->cmd[0])
 	{
-		execcmd(pix, envp, pix->cmd1);
+		perror("cmd is empty");
+		destroy(pix->paths, pix);
+		free(pix->pid);
+		exit(0);
 	}
-	destroy(pix->paths, pix->cmd1, pix->cmd2);
+	if (pix->cmd[0])
+		execcmd(pix, envp, pix->cmd[0]);
+	destroy(pix->paths, pix);
+	free(pix->pid);
 	exit(0);
 }
 
 void	secondchild(t_pipex *pix, int *link, char **envp)
 {
+	if (pix->fd[1] < 0)
+		terminate(pix);
 	dup2((pix->fd)[1], STDOUT_FILENO);
 	close((pix->fd)[1]);
 	dup2(link[0], STDIN_FILENO);
-	close(link[0]);
-	if (pix->cmd2)
+	closepipe(pix->link, pix);
+	if (!pix->cmd[pix->cmdsize - 1])
 	{
-		execcmd(pix, envp, pix->cmd2);
+		perror("cmd is empty");
+		destroy(pix->paths, pix);
+		free(pix->pid);
+		exit(0);
 	}
-	destroy(pix->paths, pix->cmd1, pix->cmd2);
+	if (pix->cmd[(pix->cmdsize - 1)])
+		execcmd(pix, envp, pix->cmd[(pix->cmdsize - 1)]);
+	destroy(pix->paths, pix);
+	free(pix->pid);
 	exit(0);
 }

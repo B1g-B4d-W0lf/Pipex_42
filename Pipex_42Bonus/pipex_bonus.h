@@ -15,7 +15,7 @@
 
 # include <fcntl.h>
 # include <sys/wait.h>
-# include "./Libft/libft.h"
+# include "../Libft/libft.h"
 
 typedef struct s_pipex
 {
@@ -24,8 +24,8 @@ typedef struct s_pipex
 	char	***cmd;
 	int		cmdsize;
 	char	**envp;
-	int 	**link;
-	pid_t		*pid;
+	int		**link;
+	pid_t	*pid;
 }		t_pipex;
 
 //utils.c

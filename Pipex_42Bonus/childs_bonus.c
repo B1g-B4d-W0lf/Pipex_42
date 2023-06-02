@@ -17,7 +17,7 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 	int	i;
 
 	i = 0;
-	if (cmd_check(cmd) == 1)
+	if (cmd_check(cmd) == 1 && (pix->paths))
 	{
 		while ((pix->paths)[i])
 		{
@@ -34,6 +34,15 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 		destroy(pix->paths, pix);
 		free(pix->pid);
 	}
+	perror("invalid cmd");
+	exit(0);
+}
+
+void	terminate(t_pipex *pix)
+{
+	closepipe(pix->link, pix);
+	destroy(pix->paths, pix);
+	free(pix->pid);
 	exit(0);
 }
 
@@ -43,10 +52,7 @@ void	firstchild(t_pipex *pix, int *link, char **envp)
 	{
 		if (pix->fd[1] >= 0)
 			close((pix->fd)[1]);
-		closepipe(pix->link, pix);
-		destroy(pix->paths, pix);
-		free(pix->pid);
-		exit(0);
+		terminate(pix);
 	}
 	dup2((pix->fd)[0], STDIN_FILENO);
 	close((pix->fd)[0]);
@@ -59,7 +65,7 @@ void	firstchild(t_pipex *pix, int *link, char **envp)
 		perror("cmd is empty");
 		destroy(pix->paths, pix);
 		free(pix->pid);
-		exit(0);		
+		exit(0);
 	}
 	if (pix->cmd[0])
 		execcmd(pix, envp, pix->cmd[0]);
@@ -78,7 +84,7 @@ void	halfchilds(t_pipex *pix, int *link, int *linkbis, int j)
 		perror("cmd is empty");
 		destroy(pix->paths, pix);
 		free(pix->pid);
-		exit(0);		
+		exit(0);
 	}
 	if (pix->cmd[j])
 		execcmd(pix, pix->envp, pix->cmd[j]);
@@ -90,12 +96,7 @@ void	halfchilds(t_pipex *pix, int *link, int *linkbis, int j)
 void	secondchild(t_pipex *pix, int *link, char **envp)
 {
 	if (pix->fd[1] < 0)
-	{
-		closepipe(pix->link, pix);
-		destroy(pix->paths, pix);
-		free(pix->pid);
-		exit(0);
-	}
+		terminate(pix);
 	dup2((pix->fd)[1], STDOUT_FILENO);
 	close((pix->fd)[1]);
 	dup2(link[0], STDIN_FILENO);
@@ -105,7 +106,7 @@ void	secondchild(t_pipex *pix, int *link, char **envp)
 		perror("cmd is empty");
 		destroy(pix->paths, pix);
 		free(pix->pid);
-		exit(0);		
+		exit(0);
 	}
 	if (pix->cmd[(pix->cmdsize - 1)])
 		execcmd(pix, envp, pix->cmd[(pix->cmdsize - 1)]);

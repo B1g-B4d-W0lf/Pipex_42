@@ -21,16 +21,18 @@ typedef struct s_pipex
 {
 	char	**paths;
 	int		fd[2];
-	char	**cmd1;
-	char	**cmd2;
-	int		hd;
+	char	***cmd;
+	int		cmdsize;
+	char	**envp;
+	int		**link;
+	pid_t	*pid;
 }		t_pipex;
 
 //utils.c
 char	*ft_sup_join(char *s1, char c, char *s2);
 void	freetab(char **tab);
 int		cmd_check(char **cmd);
-void	destroy(char **paths, char **cmd1, char **cmd2);
+void	destroy(char **paths, t_pipex *pix);
 
 //pipex.c
 void	pipex(t_pipex *pix, char **envp);
@@ -41,7 +43,13 @@ void	firstchild(t_pipex *pix, int *link, char **envp);
 void	secondchild(t_pipex *pix, int *link, char **envp);
 
 //parsing.c
-void	cmdges(char **argv, t_pipex *pix);
+void	cmdges(char **argv, t_pipex *pix, int argc);
 char	**findpath(char **envp);
+
+//pipeges.c
+void	openpipe(int ***link, t_pipex *pix);
+void	closepipe(int **link, t_pipex *pix);
+int		**createpipe(t_pipex *pix);
+void	closeone(int *link);
 
 #endif
