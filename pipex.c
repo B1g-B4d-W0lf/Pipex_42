@@ -20,11 +20,11 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 		exit(0);
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
-	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
 	if (pix->fd[0] < 0)
-		perror("file 1");
+		perror(argv[1]);
+	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
 	if (pix->fd[1] < 0)
-		perror("file 2");
+		perror(argv[argc - 1]);
 	cmdges(argv, pix, argc);
 	pix->paths = findpath(envp);
 	pix->link = createpipe(pix);
@@ -39,7 +39,7 @@ void	waiting(t_pipex *pix, int j)
 	int	i;
 
 	i = 0;
-	while (i <= j)
+	while (i <= j + 1)
 	{
 		waitpid(pix->pid[i], 0, 0);
 		i++;
@@ -60,6 +60,7 @@ void	pipex(t_pipex *pix, char **envp)
 		firstchild(pix, pix->link[j], envp);
 	if (pix->fd[0] >= 0)
 		close(pix->fd[0]);
+	i++;
 	pix->pid[i] = fork();
 	if (pix->pid[i] == 0)
 		secondchild(pix, pix->link[j], envp);

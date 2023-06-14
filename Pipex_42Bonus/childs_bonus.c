@@ -27,11 +27,7 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 		}
 	}
 	else if (cmd_check(cmd) == 0)
-	{
 		execve(cmd[0], cmd, envp);
-		destroy(pix->paths, pix);
-		free(pix->pid);
-	}
 	free(pix->pid);
 	printer(cmd);
 	destroy(pix->paths, pix);
