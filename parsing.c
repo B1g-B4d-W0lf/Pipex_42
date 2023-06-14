@@ -6,7 +6,7 @@
 /*   By: wfreulon <wfreulon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 20:53:40 by wfreulon          #+#    #+#             */
-/*   Updated: 2023/06/02 03:58:10 by wfreulon         ###   ########.fr       */
+/*   Updated: 2023/06/14 00:42:15 by wfreulon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,12 @@ char	**findpath(char **envp)
 	i = 0;
 	while (envp && envp[i])
 	{
-		while (ft_strncmp("PATH", envp[i], 4))
-			i++;
-		paths = ft_split(envp[i] + 5, ':');
-		return (paths);
+		if (!ft_strncmp("PATH", envp[i], 4))
+		{
+			paths = ft_split(envp[i] + 5, ':');
+			return (paths);
+		}
+		i++;
 	}
 	return (NULL);
 }

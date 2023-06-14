@@ -16,8 +16,8 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 {
 	if (argc < 5 || argc > 5)
 	{
-		perror("Wrong arg number");
-		exit(EXIT_FAILURE);
+		ft_printf("Wrong arg number\n");
+		exit(0);
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
 	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
@@ -27,7 +27,7 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 		perror("file 2");
 	cmdges(argv, pix, argc);
 	pix->paths = findpath(envp);
-		pix->link = createpipe(pix);
+	pix->link = createpipe(pix);
 	pix->pid = malloc(pix->cmdsize * sizeof(int));
 	if (!pix->pid)
 		return ;

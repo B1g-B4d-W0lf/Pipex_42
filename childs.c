@@ -12,6 +12,13 @@
 
 #include "pipex.h"
 
+void	printer(char **cmd)
+{
+	ft_putstr_fd("cmd is invalid:", 2);
+	ft_putstr_fd(cmd[0], 2);
+	ft_putstr_fd("\n", 2);
+}
+
 void	execcmd(t_pipex *pix, char **envp, char **cmd)
 {
 	int	i;
@@ -25,8 +32,6 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 			execve((pix->paths)[i], cmd, envp);
 			i++;
 		}
-		free(pix->pid);
-		destroy(pix->paths, pix);
 	}
 	else if (cmd_check(cmd) == 0)
 	{
@@ -34,7 +39,9 @@ void	execcmd(t_pipex *pix, char **envp, char **cmd)
 		destroy(pix->paths, pix);
 		free(pix->pid);
 	}
-	perror("invalid cmd");
+	free(pix->pid);
+	printer(cmd);
+	destroy(pix->paths, pix);
 	exit(0);
 }
 
@@ -62,7 +69,7 @@ void	firstchild(t_pipex *pix, int *link, char **envp)
 	closepipe(pix->link, pix);
 	if (!pix->cmd[0])
 	{
-		perror("cmd is empty");
+		ft_putstr_fd("cmd is empty\n", 2);
 		destroy(pix->paths, pix);
 		free(pix->pid);
 		exit(0);
@@ -84,7 +91,7 @@ void	secondchild(t_pipex *pix, int *link, char **envp)
 	closepipe(pix->link, pix);
 	if (!pix->cmd[pix->cmdsize - 1])
 	{
-		perror("cmd is empty");
+		ft_putstr_fd("cmd is empty\n", 2);
 		destroy(pix->paths, pix);
 		free(pix->pid);
 		exit(0);

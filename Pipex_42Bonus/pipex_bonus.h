@@ -46,6 +46,7 @@ void	halfchilds(t_pipex *pix, int *link, int *linkbis, int j);
 //parsing.c
 void	cmdges(char **argv, t_pipex *pix, int argc);
 char	**findpath(char **envp);
+void	printer(char **cmd);
 
 //pipeges.c
 void	openpipe(int ***link, t_pipex *pix);

@@ -33,7 +33,7 @@ $(NAME): $(OBJFILES)
 	make -C Libft
 	$(CC) $(CFLAGS) $(OBJFILES) ${LIBFT} -o $(NAME)
 
-all: $(NAME) $(NBONUS)
+all: $(NAME)
 
 $(NBONUS): $(OBJBONUS)
 	$(CC) $(CFLAGS) $(OBJBONUS) ${LIBFT} -o $(NBONUS)

@@ -16,8 +16,8 @@ void	parse(int argc, char **argv, char **envp, t_pipex *pix)
 {
 	if (argc < 5)
 	{
-		perror("Not enough args");
-		exit(EXIT_FAILURE);
+		ft_printf("Not enough args\n");
+		exit(0);
 	}
 	pix->fd[0] = open(argv[1], O_RDONLY);
 	pix->fd[1] = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0666);
@@ -40,7 +40,7 @@ void	midpipe(t_pipex *pix, int *i, int *j)
 	{
 		pix->pid[*i] = fork();
 		if (pix->pid[*i] == 0)
-			halfchilds(pix, pix->link[*j], pix->link[*j + 1], *j);
+			halfchilds(pix, pix->link[*j], pix->link[*j + 1], *j + 1);
 		(*j)++;
 		(*i)++;
 	}
